@@ -29,6 +29,9 @@ vidas = 3
 XX1 = 290
 YY1 = 630
 
+
+
+
 # Crear ventana
 ventana = pygame.display.set_mode((600, 700))
 pygame.display.set_caption("Por qué la gallina cruzó la calle")
@@ -51,6 +54,16 @@ izquierda = -2
 derecha2 = 4
 izquierda2 = -4
 
+# cargar las imagenes y cambiarles el tamaño
+tanque = pygame.image.load("img/tanque.png")
+tanque = pygame.transform.scale(tanque, (70, 50))  # Cambia el tamaño aquí
+
+
+tanque2 = pygame.image.load("img/tanque2.png")
+tanque2 = pygame.transform.scale(tanque2, (70,50))
+
+auto4x4 = pygame.image.load("img/auto4x4.png")
+auto4x4 = pygame.transform.scale(auto4x4, (70,50))
 # Bucle principal
 while True:
     clock.tick(50)  # Limita los FPS a 50
@@ -105,7 +118,6 @@ while True:
     pygame.draw.rect(ventana, gris, (0, 200, 600, 300))  # Suelo claro
     pygame.draw.rect(ventana, gris_mas_oscuro, (0, 340, 600, 20))  # Línea divisoria
     pygame.draw.rect(ventana, amarillo, (XX1, YY1, 40, 40))  # Gallina
-    pygame.draw.rect(ventana, azul, (autos1, 450, 50, 30))  # Auto 1
     pygame.draw.rect(ventana, rojo, (autos2, 220, 50, 30))  # Auto 2
     pygame.draw.rect(ventana, cian, (autos3, 380, 50, 30))  # Auto 3
     pygame.draw.rect(ventana, rojo, (autos4, 280, 50, 30))  # Auto 4
@@ -121,7 +133,8 @@ while True:
     pygame.draw.lines(ventana, rojo,True,((240,610),(300,590),(300,590),(360,610)),3) # techo de KFC
     pygame.draw.rect(ventana, cafe, (450,610,100,80)) # casa a la derecha de kfc
     pygame.draw.lines(ventana, rojo, True,((450,610),(500,590),(500,590),(550,610)),3)# techo de la casa al lado derecho de kfc
-
+    ventana.blit(tanque, (autos1, 440))
+    ventana.blit(tanque2, (autos2, 210))
     # Detección de colisiones
     gallina_rect = pygame.Rect(XX1, YY1, 40, 40)
     auto_rects = [
