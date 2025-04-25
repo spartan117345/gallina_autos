@@ -1,8 +1,7 @@
 import pygame
 import sys
-import random
 
-# inicializacion
+# Inicialización
 pygame.init()
 
 # Colores
@@ -10,7 +9,7 @@ amarillo = (187, 173, 4)
 amarilo_oscuro = (142, 130, 10 )
 rojo = (255, 0, 0)
 azul = (0, 0, 255)
-verde = (50, 222, 12)
+verde = (52, 237, 11)
 rosado = (255, 195, 203)
 negro = (0,0,0)
 naranja = (194, 88, 0)
@@ -23,28 +22,35 @@ gris_claro = (198, 200, 199)
 boca = (197, 71, 56)
 morado = (145, 74, 201 )
 cafe = (91, 10, 10 )
+# Variable de vidas
+vidas = 3
 
-# variables del jugador
-XX = 300
-YY = 550
+# Variables del jugador
+XX1 = 290
+YY1 = 630
 
 # Crear ventana
 ventana = pygame.display.set_mode((600, 700))
-pygame.display.set_caption("El cuadrado que rebota")
+pygame.display.set_caption("Por qué la gallina cruzó la calle")
 
 # Reloj para controlar la velocidad de actualización
 clock = pygame.time.Clock()
 
-# Variables para el cuadrado que se mueve
+# Fuente para mostrar el texto de vidas
+fuente_arial = pygame.font.SysFont("Arial", 35, 1, 1)
+
+# Variables para los autos
 autos1 = 0
 autos2 = 600
 autos3 = 0
 autos4 = 600
+autos5 = 700
+autos6 = 700
 derecha = 2
 izquierda = -2
 derecha2 = 4
 izquierda2 = -4
-vidas = 3
+
 # Bucle principal
 while True:
     clock.tick(50)  # Limita los FPS a 50
@@ -55,49 +61,77 @@ while True:
             pygame.quit()
             sys.exit()
 
-    # Llenar la ventana con color azul
+    # Llenar la ventana con color verde
     ventana.fill(verde)
 
-    # Actualizar la posición del cuadrado que rebota
-    autos1 = autos1 + derecha
-    autos2 = autos2 + izquierda
-    autos3 = autos3 + derecha2
-    autos4 = autos4 + izquierda2
-    # Comprobar si el cuadrado rebota
+    # Movimiento de los autos
+    autos1 += derecha
+    autos2 += izquierda
+    autos3 += derecha2
+    autos4 += izquierda2
+    autos5 += izquierda2
+    autos6 += izquierda
+
+    # Comprobar si los autos salen de la pantalla y reiniciarlos
     if autos1 >= 600:
-        autos1 = 0
-
-    if autos2 <= 0:
+        autos1 = -50
+    if autos2 <= -50:
         autos2 = 600
-
     if autos3 >= 600:
-        autos3 = 0
-
-    if autos4 <= 0:
+        autos3 = -50
+    if autos4 <= -50:
         autos4 = 600
+    if autos5 <= -50:
+        autos5 = 600
+    if autos6 <= -50:
+        autos6 = 600
 
+    # Movimiento de la gallina con teclas (se usa get_pressed() para un movimiento más fluido)
+    keys = pygame.key.get_pressed()  # Obtiene todas las teclas presionadas
+    if keys[pygame.K_w]:  # Tecla W (arriba)
+        YY1 -= 3
+    if keys[pygame.K_s]:  # Tecla S (abajo)
+        YY1 += 3
+    if keys[pygame.K_a]:  # Tecla A (izquierda)
+        XX1 -= 3
+    if keys[pygame.K_d]:  # Tecla D (derecha)
+        XX1 += 3
 
+    # Dibujar objetos
+    pygame.draw.rect(ventana, gris_mas_oscuro, (0, 150, 600, 400))  # Suelo oscuro
+    pygame.draw.rect(ventana, gris, (0, 200, 600, 300))  # Suelo claro
+    pygame.draw.rect(ventana, gris_mas_oscuro, (0, 340, 600, 20))  # Línea divisoria
+    pygame.draw.rect(ventana, amarillo, (XX1, YY1, 40, 40))  # Gallina
+    pygame.draw.rect(ventana, rojo, (autos1, 450, 50, 30))  # Auto 1
+    pygame.draw.rect(ventana, rojo, (autos2, 220, 50, 30))  # Auto 2
+    pygame.draw.rect(ventana, rojo, (autos3, 380, 50, 30))  # Auto 3
+    pygame.draw.rect(ventana, rojo, (autos4, 280, 50, 30))  # Auto 4
+    pygame.draw.rect(ventana, rojo, (autos5, 280, 50, 30))  # Auto 5
+    pygame.draw.rect(ventana, rojo, (autos6, 220, 50, 30))  # Auto 6
 
-    # Dibujar el cuadrado principal (rojo) que se mueve
-    pygame.draw.rect(ventana, gris_mas_oscuro,(0,150,600, 400))
-    pygame.draw.rect(ventana, gris, (0,200,600,300))
-    pygame.draw.rect(ventana, gris_mas_oscuro, (0,340, 600, 20))
-    pygame.draw.rect(ventana, blanco, (0, 260, 600, 10))
-    pygame.draw.rect(ventana, blanco, (0, 425, 600, 10))
+    # Detección de colisiones
+    gallina_rect = pygame.Rect(XX1, YY1, 40, 40)
+    auto_rects = [
+        pygame.Rect(autos1, 450, 50, 30),
+        pygame.Rect(autos2, 220, 50, 30),
+        pygame.Rect(autos3, 380, 50, 30),
+        pygame.Rect(autos4, 280, 50, 30),
+        pygame.Rect(autos5, 280, 50, 30),
+        pygame.Rect(autos6, 220, 50, 30)
+    ]
     
-    fuente_arial = pygame.font.SysFont("Arial", 35, 1, 1)
-    texto = fuente_arial.render("vidas"+ str(vidas,1, negro))
-    ventana.blit(texto,(10,10))
+    for auto_rect in auto_rects:
+        if gallina_rect.colliderect(auto_rect):
+            vidas -= 1  # Decrementar vidas al colisionar
 
-    for i in range(2):
-        pygame.draw.rect(ventana, rojo, (autos1, 450, 50,30))
-        pygame.draw.rect(ventana, rojo, (autos1, 380, 50,30))
-        pygame.draw.rect(ventana, rojo, (autos2, 220, 50,30))
-        pygame.draw.rect(ventana, rojo, (autos2, 280, 50,30))
-        pygame.draw.rect(ventana, rojo, (autos3, 450, 50,30))
-        pygame.draw.rect(ventana, rojo, (autos3, 380, 50,30))
-        pygame.draw.rect(ventana, rojo, (autos4, 220, 50,30))
-        pygame.draw.rect(ventana, rojo, (autos4, 280, 50,30))
+    # Actualizar texto de vidas
+    texto = fuente_arial.render("Vidas: " + str(vidas), True, negro)
+    ventana.blit(texto, (10, 10))
+
+    # Verificar si el juego termina
+    if vidas <= 0:
+        texto_gameover = fuente_arial.render("GAME OVER", True, rojo)
+        ventana.blit(texto_gameover, (200, 300))
 
     # Actualizar la pantalla
     pygame.display.flip()
